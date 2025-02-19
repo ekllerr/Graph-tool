@@ -1,14 +1,14 @@
-class Edge {
-    constructor(from, to, nodes) {
-        this.from = from;
-        this.to = to;
-        this.nodes = nodes;
+import {ctx} from "../app.js";
+export class Edge {
+    constructor(fromNode, toNode) {
+        this.fromNode = fromNode;
+        this.toNode = toNode;
     }
 
     draw() {
         ctx.beginPath();
-        ctx.moveTo(this.from[0], this.from[1]);
-        ctx.lineTo(this.to[0], this.to[1]);
+        ctx.moveTo(this.fromNode.x, this.fromNode.y);
+        ctx.lineTo(this.toNode.x, this.toNode.y);
         ctx.stroke();
     }
 }

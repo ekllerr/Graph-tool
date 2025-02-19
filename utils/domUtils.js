@@ -16,9 +16,10 @@ function setUpCanvasListeners(){
         }
 
         if(clickedNode){
-            console.log(clickedNode);
+            handleNodeClick(clickedNode);
         }else{
             graph.addNode(x,y);
+            graph.resetSelectedNode()
         }
     });
 
@@ -27,7 +28,6 @@ function setUpCanvasListeners(){
         let [x, y] = getClientCoordinates(e);
         let clickedNode = findClickedNode(x,y);
         if(clickedNode){
-            console.log(clickedNode);
             graph.removeNode(clickedNode);
         }
     });
@@ -44,3 +44,12 @@ function getClientCoordinates(e){
     return [e.clientX - canvasRect.x, e.clientY - canvasRect.y];
 }
 
+function handleNodeClick(clickedNode){
+    if(!graph.selectedNode){
+        graph.selectedNode = clickedNode;
+    } else if(graph.selectedNode !== clickedNode){
+        graph.addEdge(graph.selectedNode,clickedNode);
+    } else{
+        graph.resetSelectedNode()
+    }
+}

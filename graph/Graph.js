@@ -1,4 +1,5 @@
 import {Node} from "./Node.js";
+import {Edge} from "./Edge.js";
 import {clearCanvas} from "../utils/helpers.js";
 
 export class Graph{
@@ -15,6 +16,13 @@ export class Graph{
         let newNode = new Node(x, y, number, label);
         newNode.draw();
         this.nodes.push(newNode);
+    }
+
+    addEdge(fromNode, toNode){
+        let newEdge = new Edge(fromNode, toNode);
+        newEdge.draw();
+        this.edges.push(newEdge);
+        this.resetSelectedNode();
     }
 
     removeNode(node){
@@ -51,5 +59,9 @@ export class Graph{
         }
 
         return label;
+    }
+
+    resetSelectedNode(){
+        this.selectedNode = null;
     }
 }
