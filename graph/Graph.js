@@ -1,4 +1,5 @@
 import {Node} from "./Node.js";
+import {clearCanvas} from "../utils/helpers.js";
 
 export class Graph{
     constructor(){
@@ -14,6 +15,30 @@ export class Graph{
         let newNode = new Node(x, y, number, label);
         newNode.draw();
         this.nodes.push(newNode);
+    }
+
+    removeNode(node){
+        let index = this.nodes.indexOf(node);
+        if(index === -1){
+            console.error('No node found');
+        }
+        this.nodes.splice(index, 1);
+        for(let i = 0; i < this.nodes.length; i++){
+            this.nodes[i].number = i + 1;
+            this.nodes[i].label = this.getNodeLabel(i);
+        }
+        this.redrawGraph();
+    }
+
+    redrawAllNodes(){
+        for(let node of this.nodes){
+            node.draw();
+        }
+    }
+
+    redrawGraph(){
+        clearCanvas();
+        this.redrawAllNodes();
     }
 
 

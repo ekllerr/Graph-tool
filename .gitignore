@@ -1,3 +1,5 @@
 node_modules/
 package-lock.json
+oldScript.js
+oldUtils.js
 .idea/

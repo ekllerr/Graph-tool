@@ -1,5 +1,4 @@
-import  {graph} from "../app.js";
-import {nodeRadius} from "../app.js";
+import  {graph, nodeRadius, canvas, ctx} from "../app.js";
 
 export function findClickedNode(x, y) {
     for (let i = 0; i < graph.nodes.length; i++) {
@@ -13,4 +12,8 @@ export function findClickedNode(x, y) {
     }
 
     return null;
+}
+
+export function clearCanvas(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
