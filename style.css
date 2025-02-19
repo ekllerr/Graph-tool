@@ -1,0 +1,15 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    background-color: #f0f0f0;
+}
+
+canvas {
+    margin: 15px;
+    border: 1px solid #000;
+}

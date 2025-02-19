@@ -1,0 +1,29 @@
+import {ctx, nodeRadius, identifierInput} from "../app.js";
+
+export class Node {
+    constructor(x, y, number, label) {
+        this.x = x;
+        this.y = y;
+        this.number = number;
+        this.label = label;
+    }
+
+    move(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, nodeRadius, 0, Math.PI * 2);
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
+        if (identifierInput.checked) {
+            ctx.fillText(this.number, this.x, this.y);
+        } else {
+            ctx.fillText(this.label, this.x, this.y);
+        }
+        ctx.stroke();
+    }
+
+}
