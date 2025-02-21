@@ -6,7 +6,9 @@ export class Graph{
     constructor(){
         this.nodes = [];
         this.edges = [];
+
         this.selectedNode = null;
+        this.draggingNode = null;
         this.tempEdge = null;
     }
 
@@ -58,7 +60,11 @@ export class Graph{
 
     redrawAllNodes(){
         for(let node of this.nodes){
-            node.draw();
+            if(this.selectedNode===node){
+                node.draw('rgba(121,121,121,0.25)');
+            } else{
+                node.draw();
+            }
         }
     }
 
@@ -72,6 +78,15 @@ export class Graph{
         clearCanvas();
         this.redrawAllNodes();
         this.redrawAllEdges();
+        if(this.selectedNode && this.tempEdge){
+            this.drawTempEdge();
+        }
+    }
+
+    drawTempEdge(){
+        let tempEdge = new Edge(this.selectedNode, this.tempEdge);
+
+        tempEdge.draw();
     }
 
 
@@ -88,5 +103,9 @@ export class Graph{
 
     resetSelectedNode(){
         this.selectedNode = null;
+    }
+
+    resetTempEdge(){
+        this.tempEdge = null;
     }
 }

@@ -13,8 +13,10 @@ export class Node {
         this.y = y;
     }
 
-    draw() {
+    draw(color) {
         ctx.beginPath();
+        ctx.fillStyle = 'black';
+        ctx.strokeStyle = 'black';
         ctx.arc(this.x, this.y, nodeRadius, 0, Math.PI * 2);
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";
@@ -23,7 +25,14 @@ export class Node {
         } else {
             ctx.fillText(this.label, this.x, this.y);
         }
+
+        if(color){
+            ctx.fillStyle = color;
+            ctx.fill();
+        }
+
         ctx.stroke();
     }
+
 
 }

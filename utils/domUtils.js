@@ -11,15 +11,23 @@ function setUpCanvasListeners(){
     canvas.addEventListener("click", e => {
         let [x,y] = getClientCoordinates(e);
         let clickedNode = null;
+
         if(graph.nodes.length > 0){
             clickedNode = findClickedNode(x,y);
+        }
+
+        if(graph.tempEdge && !clickedNode){
+            graph.resetSelectedNode();
+            graph.resetTempEdge();
+            graph.redrawGraph();
+            return;
         }
 
         if(clickedNode){
             handleNodeClick(clickedNode);
         }else{
             graph.addNode(x,y);
-            graph.resetSelectedNode()
+            graph.resetSelectedNode();
         }
     });
 
@@ -35,10 +43,6 @@ function setUpCanvasListeners(){
             graph.redrawGraph();
         }
 
-        /*todo
-        *   create var that tracks if graph was changed, if true than redraw in the end of listener
-        * */
-
         for(let edge of graph.edges){
             if(isCursorOnEdge(edge,{x,y})){
                 graph.removeEdge(edge);
@@ -47,6 +51,21 @@ function setUpCanvasListeners(){
         }
 
     });
+
+    canvas.addEventListener("mousemove", e => {
+       let [x,y] = getClientCoordinates(e);
+       if(graph.selectedNode){
+           graph.tempEdge = {x:x,y:y};
+           requestAnimationFrame(graph.redrawGraph.bind(graph));
+       }
+    });
+
+    /*canvas.addEventListener("mouseup", e => {
+        if(graph.tempEdge){
+            graph.tempEdge = null;
+            graph.redrawGraph();
+        }
+    });*/
 }
 
 function setUpInputsListeners(){
@@ -65,7 +84,11 @@ function handleNodeClick(clickedNode){
         graph.selectedNode = clickedNode;
     } else if(graph.selectedNode !== clickedNode){
         graph.addEdge(graph.selectedNode,clickedNode);
+        graph.resetTempEdge();
+        graph.redrawGraph();
     } else{
-        graph.resetSelectedNode()
+        graph.resetSelectedNode();
+        graph.resetTempEdge();
+        graph.redrawGraph();
     }
 }
