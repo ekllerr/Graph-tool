@@ -13,7 +13,6 @@ canvas.width = width;
 canvas.height = height;
 
 
-
 export const nodeRadius = 9;
 
 export const graph = new Graph();

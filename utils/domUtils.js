@@ -1,5 +1,5 @@
 import {graph, canvas, identifierInput} from "../app.js";
-import {findClickedNode} from "./helpers.js";
+import {findClickedNode, isCursorOnEdge} from "./helpers.js";
 
 export function setUpEventListeners(){
     setUpCanvasListeners();
@@ -25,16 +25,32 @@ function setUpCanvasListeners(){
 
     canvas.addEventListener("contextmenu", e => {
         e.preventDefault();
+
         let [x, y] = getClientCoordinates(e);
+
         let clickedNode = findClickedNode(x,y);
+
         if(clickedNode){
             graph.removeNode(clickedNode);
+            graph.redrawGraph();
         }
+
+        /*todo
+        *   create var that tracks if graph was changed, if true than redraw in the end of listener
+        * */
+
+        for(let edge of graph.edges){
+            if(isCursorOnEdge(edge,{x,y})){
+                graph.removeEdge(edge);
+                graph.redrawGraph();
+            }
+        }
+
     });
 }
 
 function setUpInputsListeners(){
-    identifierInput.addEventListener("input", e => {
+    identifierInput.addEventListener("input", () => {
         graph.redrawGraph();
     })
 }

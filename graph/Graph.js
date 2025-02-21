@@ -27,15 +27,33 @@ export class Graph{
 
     removeNode(node){
         let index = this.nodes.indexOf(node);
-        if(index === -1){
-            console.error('No node found');
-        }
+
+        if(index === -1) return;
+
         this.nodes.splice(index, 1);
+
         for(let i = 0; i < this.nodes.length; i++){
             this.nodes[i].number = i + 1;
             this.nodes[i].label = this.getNodeLabel(i);
         }
-        this.redrawGraph();
+
+
+        for (let i = this.edges.length - 1; i >= 0; i--) {
+            if (this.edges[i].fromNode === node || this.edges[i].toNode === node) {
+                this.removeEdge(this.edges[i]);
+            }
+        }
+
+        // this.redrawGraph();
+    }
+
+    removeEdge(edge){
+        let index = this.edges.indexOf(edge);
+
+        if(index === -1) return;
+
+        this.edges.splice(index, 1);
+        // this.redrawGraph();
     }
 
     redrawAllNodes(){
@@ -44,9 +62,16 @@ export class Graph{
         }
     }
 
+    redrawAllEdges(){
+        for(let edge of this.edges){
+            edge.draw();
+        }
+    }
+
     redrawGraph(){
         clearCanvas();
         this.redrawAllNodes();
+        this.redrawAllEdges();
     }
 
 
