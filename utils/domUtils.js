@@ -12,6 +12,11 @@ function setUpCanvasListeners(){
         let [x,y] = getClientCoordinates(e);
         let clickedNode = null;
 
+        if(graph.justDragged){
+            graph.justDragged = false;
+            return;
+        }
+
         if(graph.nodes.length > 0){
             clickedNode = findClickedNode(x,y);
         }
@@ -52,20 +57,39 @@ function setUpCanvasListeners(){
 
     });
 
+    canvas.addEventListener("mousedown", e => {
+        let [x, y] = getClientCoordinates(e);
+        let clickedNode = null;
+        if(graph.nodes.length > 0){
+            clickedNode = findClickedNode(x,y);
+        }
+
+        if(clickedNode){
+            graph.draggingNode = clickedNode;
+        }
+    });
+
     canvas.addEventListener("mousemove", e => {
        let [x,y] = getClientCoordinates(e);
        if(graph.selectedNode){
            graph.tempEdge = {x:x,y:y};
            requestAnimationFrame(graph.redrawGraph.bind(graph));
        }
+
+       if(graph.draggingNode){
+           graph.resetSelectedNode();
+           graph.justDragged = true;
+           graph.draggingNode.x = x;
+           graph.draggingNode.y = y;
+           requestAnimationFrame(graph.redrawGraph.bind(graph));
+       }
     });
 
-    /*canvas.addEventListener("mouseup", e => {
-        if(graph.tempEdge){
-            graph.tempEdge = null;
-            graph.redrawGraph();
+    canvas.addEventListener("mouseup", e => {
+        if(graph.draggingNode){
+            graph.resetDraggingNode();
         }
-    });*/
+    });
 }
 
 function setUpInputsListeners(){

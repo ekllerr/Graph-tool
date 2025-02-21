@@ -9,6 +9,7 @@ export class Graph{
 
         this.selectedNode = null;
         this.draggingNode = null;
+        this.justDragged = false;
         this.tempEdge = null;
     }
 
@@ -107,5 +108,9 @@ export class Graph{
 
     resetTempEdge(){
         this.tempEdge = null;
+    }
+
+    resetDraggingNode(){
+        this.draggingNode = null;
     }
 }
