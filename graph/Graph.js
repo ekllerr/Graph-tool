@@ -35,11 +35,15 @@ export class Graph{
 
         this.nodes.splice(index, 1);
 
+        if(this.selectedNode === node){
+            this.resetSelectedNode();
+            this.resetTempEdge();
+        }
+
         for(let i = 0; i < this.nodes.length; i++){
             this.nodes[i].number = i + 1;
             this.nodes[i].label = this.getNodeLabel(i);
         }
-
 
         for (let i = this.edges.length - 1; i >= 0; i--) {
             if (this.edges[i].fromNode === node || this.edges[i].toNode === node) {
@@ -47,7 +51,6 @@ export class Graph{
             }
         }
 
-        // this.redrawGraph();
     }
 
     removeEdge(edge){
@@ -61,6 +64,9 @@ export class Graph{
 
     redrawAllNodes(){
         for(let node of this.nodes){
+            if(this.draggingNode){
+                this.draggingNode.draw('rgba(121,121,121,0.25)');
+            }
             if(this.selectedNode===node){
                 node.draw('rgba(121,121,121,0.25)');
             } else{

@@ -88,6 +88,7 @@ function setUpCanvasListeners(){
     canvas.addEventListener("mouseup", e => {
         if(graph.draggingNode){
             graph.resetDraggingNode();
+            graph.redrawGraph();
         }
     });
 }

@@ -8,11 +8,6 @@ export class Node {
         this.label = label;
     }
 
-    move(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-
     draw(color) {
         ctx.beginPath();
         ctx.fillStyle = 'black';

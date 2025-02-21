@@ -18,7 +18,7 @@ export function clearCanvas(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-export function isCursorOnEdge(edge,cursor,threshold=3){
+export function isCursorOnEdge(edge,cursor,threshold=4){
     const {x:Ax, y: Ay} = edge.fromNode;
     const {x:Bx, y: By} = edge.toNode;
     const {x:Cx, y:Cy} = cursor;
