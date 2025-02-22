@@ -13,6 +13,11 @@ export class Graph{
         this.tempEdge = null;
     }
 
+    /* todo
+    *   додати можливість створення кратних ребер
+    *   додати можливість створити орієнтований граф
+    * */
+
     addNode(x,y){
         let number = this.nodes.length > 0 ? this.nodes[this.nodes.length - 1].number + 1 : 1;
         let label = this.getNodeLabel(number -1);
@@ -25,7 +30,7 @@ export class Graph{
         let newEdge = new Edge(fromNode, toNode);
         newEdge.draw();
         this.edges.push(newEdge);
-        this.resetSelectedNode();
+        this.clearSelectedNode();
     }
 
     removeNode(node){
@@ -36,8 +41,8 @@ export class Graph{
         this.nodes.splice(index, 1);
 
         if(this.selectedNode === node){
-            this.resetSelectedNode();
-            this.resetTempEdge();
+            this.clearSelectedNode();
+            this.clearTempEdge();
         }
 
         for(let i = 0; i < this.nodes.length; i++){
@@ -62,7 +67,7 @@ export class Graph{
         // this.redrawGraph();
     }
 
-    redrawAllNodes(){
+    redrawNodes(){
         for(let node of this.nodes){
             if(this.draggingNode){
                 this.draggingNode.draw('rgba(121,121,121,0.25)');
@@ -75,7 +80,7 @@ export class Graph{
         }
     }
 
-    redrawAllEdges(){
+    redrawEdges(){
         for(let edge of this.edges){
             edge.draw();
         }
@@ -83,8 +88,8 @@ export class Graph{
 
     redrawGraph(){
         clearCanvas();
-        this.redrawAllNodes();
-        this.redrawAllEdges();
+        this.redrawNodes();
+        this.redrawEdges();
         if(this.selectedNode && this.tempEdge){
             this.drawTempEdge();
         }
@@ -108,15 +113,15 @@ export class Graph{
         return label;
     }
 
-    resetSelectedNode(){
+    clearSelectedNode(){
         this.selectedNode = null;
     }
 
-    resetTempEdge(){
+    clearTempEdge(){
         this.tempEdge = null;
     }
 
-    resetDraggingNode(){
+    clearDraggingNode(){
         this.draggingNode = null;
     }
 }

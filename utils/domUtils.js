@@ -8,89 +8,98 @@ export function setUpEventListeners(){
 }
 
 function setUpCanvasListeners(){
-    canvas.addEventListener("click", e => {
-        let [x,y] = getClientCoordinates(e);
-        let clickedNode = null;
+    canvas.addEventListener("click", e => handleCanvasClick(e));
 
-        if(graph.justDragged){
-            graph.justDragged = false;
-            return;
-        }
+    canvas.addEventListener("contextmenu", e => handleRightClick(e));
 
-        if(graph.nodes.length > 0){
-            clickedNode = findClickedNode(x,y);
-        }
+    canvas.addEventListener("mousedown", e => handleMouseDown(e));
 
-        if(graph.tempEdge && !clickedNode){
-            graph.resetSelectedNode();
-            graph.resetTempEdge();
-            graph.redrawGraph();
-            return;
-        }
+    canvas.addEventListener("mousemove", e => handleMouseMove(e));
 
-        if(clickedNode){
-            handleNodeClick(clickedNode);
-        }else{
-            graph.addNode(x,y);
-            graph.resetSelectedNode();
-        }
-    });
+    canvas.addEventListener("mouseup", handleMouseUp);
+}
 
-    canvas.addEventListener("contextmenu", e => {
-        e.preventDefault();
+function handleCanvasClick(e){
+    let [x,y] = getClientCoordinates(e);
+    let clickedNode = null;
 
-        let [x, y] = getClientCoordinates(e);
+    if(graph.justDragged){
+        graph.justDragged = false;
+        return;
+    }
 
-        let clickedNode = findClickedNode(x,y);
+    if(graph.nodes.length > 0){
+        clickedNode = findClickedNode(x,y);
+    }
 
-        if(clickedNode){
-            graph.removeNode(clickedNode);
-            graph.redrawGraph();
-        }
+    if(graph.tempEdge && !clickedNode){
+        graph.clearSelectedNode();
+        graph.clearTempEdge();
+        graph.redrawGraph();
+        return;
+    }
 
-        for(let edge of graph.edges){
-            if(isCursorOnEdge(edge,{x,y})){
-                graph.removeEdge(edge);
-                graph.redrawGraph();
-            }
-        }
+    if(clickedNode){
+        handleNodeClick(clickedNode);
+    }else{
+        graph.addNode(x,y);
+        graph.clearSelectedNode();
+    }
+}
 
-    });
+function handleRightClick(e){
+    e.preventDefault();
 
-    canvas.addEventListener("mousedown", e => {
-        let [x, y] = getClientCoordinates(e);
-        let clickedNode = null;
-        if(graph.nodes.length > 0){
-            clickedNode = findClickedNode(x,y);
-        }
+    let [x, y] = getClientCoordinates(e);
 
-        if(clickedNode){
-            graph.draggingNode = clickedNode;
-        }
-    });
+    let clickedNode = findClickedNode(x,y);
 
-    canvas.addEventListener("mousemove", e => {
-       let [x,y] = getClientCoordinates(e);
-       if(graph.selectedNode){
-           graph.tempEdge = {x:x,y:y};
-           requestAnimationFrame(graph.redrawGraph.bind(graph));
-       }
+    if(clickedNode){
+        graph.removeNode(clickedNode);
+        graph.redrawGraph();
+    }
 
-       if(graph.draggingNode){
-           graph.resetSelectedNode();
-           graph.justDragged = true;
-           graph.draggingNode.x = x;
-           graph.draggingNode.y = y;
-           requestAnimationFrame(graph.redrawGraph.bind(graph));
-       }
-    });
-
-    canvas.addEventListener("mouseup", e => {
-        if(graph.draggingNode){
-            graph.resetDraggingNode();
+    for(let edge of graph.edges){
+        if(isCursorOnEdge(edge,{x,y})){
+            graph.removeEdge(edge);
             graph.redrawGraph();
         }
-    });
+    }
+}
+
+function handleMouseDown(e){
+    let [x, y] = getClientCoordinates(e);
+    let clickedNode = null;
+    if(graph.nodes.length > 0){
+        clickedNode = findClickedNode(x,y);
+    }
+
+    if(clickedNode){
+        graph.draggingNode = clickedNode;
+    }
+}
+
+function handleMouseMove(e){
+    let [x,y] = getClientCoordinates(e);
+    if(graph.selectedNode){
+        graph.tempEdge = {x:x,y:y};
+        requestAnimationFrame(graph.redrawGraph.bind(graph));
+    }
+
+    if(graph.draggingNode){
+        graph.clearSelectedNode();
+        graph.justDragged = true;
+        graph.draggingNode.x = x;
+        graph.draggingNode.y = y;
+        requestAnimationFrame(graph.redrawGraph.bind(graph));
+    }
+}
+
+function handleMouseUp(){
+    if(graph.draggingNode){
+        graph.clearDraggingNode();
+        graph.redrawGraph();
+    }
 }
 
 function setUpInputsListeners(){
@@ -109,11 +118,11 @@ function handleNodeClick(clickedNode){
         graph.selectedNode = clickedNode;
     } else if(graph.selectedNode !== clickedNode){
         graph.addEdge(graph.selectedNode,clickedNode);
-        graph.resetTempEdge();
+        graph.clearTempEdge();
         graph.redrawGraph();
     } else{
-        graph.resetSelectedNode();
-        graph.resetTempEdge();
+        graph.clearSelectedNode();
+        graph.clearTempEdge();
         graph.redrawGraph();
     }
 }

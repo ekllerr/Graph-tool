@@ -27,9 +27,12 @@ export class Edge {
 
         if(distance === 0) return;
 
+        //Normalize vector
         let offsetX = (dx / distance) * nodeRadius;
         let offsetY = (dy / distance) * nodeRadius;
 
+        // Calculate the start and end points of the edge, adjusting for the node radius,
+        // so that the edge starts and ends at the node's border, not at its center.
         let startX = Ax + offsetX;
         let startY = Ay + offsetY;
         let endX = Bx - offsetX;
