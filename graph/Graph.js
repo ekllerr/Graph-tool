@@ -16,6 +16,9 @@ export class Graph{
     /* todo
     *   додати можливість створення кратних ребер
     *   додати можливість створити орієнтований граф
+    *   fix multiple edges creation
+    *   add collision for multiple edges
+    *   if only one edge remains after removing the edges, it must be straight
     * */
 
     addNode(x,y){
@@ -27,10 +30,31 @@ export class Graph{
     }
 
     addEdge(fromNode, toNode){
-        let newEdge = new Edge(fromNode, toNode);
-        newEdge.draw();
+        const existingEdges = this.edges.filter(edge =>
+            (edge.fromNode === fromNode && edge.toNode === toNode) ||
+            (edge.fromNode === toNode && edge.toNode === fromNode)
+        );
+
+        const existingEdgesCount = existingEdges.length;
+
+        const offset = this.calculateOffset(existingEdgesCount);
+
+        let newEdge = new Edge(fromNode, toNode,offset);
+        newEdge.draw(fromNode,toNode,offset);
         this.edges.push(newEdge);
+
         this.clearSelectedNode();
+        console.log("existing edges: " + existingEdgesCount + ", new edge offset: " + newEdge.offset);
+    }
+
+    calculateOffset(existingEdgeCount){
+        const baseOffset = 15;
+
+        if(existingEdgeCount === 0){
+            return 0;
+        }
+
+        return baseOffset * (existingEdgeCount % 2 === 0 ? 1 : -1) * Math.floor((existingEdgeCount + 1) / 2);
     }
 
     removeNode(node){
