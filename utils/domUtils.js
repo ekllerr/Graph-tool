@@ -1,5 +1,5 @@
-import {graph, canvas, identifierInput} from "../app.js";
-import {findClickedNode, isCursorOnEdge} from "./helpers.js";
+import {graph, canvas, identifierInput, saveGraphButton, loadGraphInput} from "../app.js";
+import {findClickedNode, isCursorOnEdge, downloadGraphJson, loadGraphByJson} from "./helpers.js";
 
 export function setUpEventListeners(){
     setUpCanvasListeners();
@@ -105,6 +105,15 @@ function handleMouseUp(){
 function setUpInputsListeners(){
     identifierInput.addEventListener("input", () => {
         graph.redrawGraph();
+    });
+
+    saveGraphButton.addEventListener("click", ()=>{
+        downloadGraphJson();
+    });
+
+    loadGraphInput.addEventListener("change", (e)=>{
+        console.log('changed')
+        loadGraphByJson(e);
     })
 }
 

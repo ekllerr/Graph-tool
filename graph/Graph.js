@@ -18,12 +18,17 @@ export class Graph{
     *   додати можливість створити орієнтований граф
     * */
 
-    addNode(x,y){
-        let number = this.nodes.length > 0 ? this.nodes[this.nodes.length - 1].number + 1 : 1;
-        let label = this.getNodeLabel(number -1);
+    addNode(x,y,number=null,label=null){
+        if(!number){
+            number = this.nodes.length > 0 ? this.nodes[this.nodes.length - 1].number + 1 : 1;
+        }
+        if(!label){
+            label = this.getNodeLabel(number -1);
+        }
         let newNode = new Node(x, y, number, label);
         newNode.draw();
         this.nodes.push(newNode);
+        console.log(this.nodes);
     }
 
     addEdge(fromNode, toNode){
@@ -31,6 +36,8 @@ export class Graph{
         newEdge.draw();
         this.edges.push(newEdge);
         this.clearSelectedNode();
+
+        console.log(this.edges);
     }
 
     removeNode(node){
@@ -111,6 +118,45 @@ export class Graph{
         }
 
         return label;
+    }
+
+    saveToJson(){
+        const data = {
+            nodes: this.nodes.map(node => ({
+                number: node.number,
+                label: node.label,
+                x: node.x,
+                y: node.y
+            })),
+            edges: this.edges.map(edge => ({
+                fromNode: edge.fromNode,
+                toNode: edge.toNode
+            }))
+        }
+
+        return JSON.stringify(data, null, 2);
+    }
+
+    loadFromJson(json){
+        const data = JSON.parse(json);
+
+        this.clearNodes();
+
+        data.nodes.map(node => this.addNode(node.x,node.y,node.number,node.label));
+
+        this.clearEdges();
+
+        data.edges.map(edge => this.addEdge(edge.fromNode, edge.toNode));
+
+        this.redrawGraph();
+    }
+
+    clearNodes(){
+        this.nodes = [];
+    }
+
+    clearEdges(){
+        this.edges = [];
     }
 
     clearSelectedNode(){

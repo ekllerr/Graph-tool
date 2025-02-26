@@ -34,3 +34,26 @@ export function isCursorOnEdge(edge,cursor,threshold=4){
 
     return distance < threshold && dotProduct1>=0 && dotProduct2;
 }
+
+export function downloadGraphJson(){
+    const json = graph.saveToJson();
+    const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "graph.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+export function loadGraphByJson(e){
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const json = e.target.result;
+        graph.loadFromJson(json);
+    };
+    reader.readAsText(file); 
+}
