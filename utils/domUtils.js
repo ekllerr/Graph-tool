@@ -1,4 +1,4 @@
-import {graph, canvas, identifierInput, saveGraphButton, loadGraphInput} from "../app.js";
+import {graph, canvas, identifierInput, saveGraphButton, loadGraphInput, clearGraphButton} from "../app.js";
 import {findClickedNode, isCursorOnEdge, downloadGraphJson, loadGraphByJson} from "./helpers.js";
 
 export function setUpEventListeners(){
@@ -17,6 +17,27 @@ function setUpCanvasListeners(){
     canvas.addEventListener("mousemove", e => handleMouseMove(e));
 
     canvas.addEventListener("mouseup", handleMouseUp);
+}
+
+
+function setUpInputsListeners(){
+    identifierInput.addEventListener("input", () => {
+        graph.redrawGraph();
+    });
+
+    saveGraphButton.addEventListener("click", ()=>{
+        downloadGraphJson();
+    });
+
+    loadGraphInput.addEventListener("change", (e)=>{
+        loadGraphByJson(e);
+    });
+
+    clearGraphButton.addEventListener("click", () => {
+        graph.clearGraph();
+        graph.redrawGraph();
+        loadGraphInput.value = "";
+    });
 }
 
 function handleCanvasClick(e){
@@ -100,21 +121,6 @@ function handleMouseUp(){
         graph.clearDraggingNode();
         graph.redrawGraph();
     }
-}
-
-function setUpInputsListeners(){
-    identifierInput.addEventListener("input", () => {
-        graph.redrawGraph();
-    });
-
-    saveGraphButton.addEventListener("click", ()=>{
-        downloadGraphJson();
-    });
-
-    loadGraphInput.addEventListener("change", (e)=>{
-        console.log('changed')
-        loadGraphByJson(e);
-    })
 }
 
 function getClientCoordinates(e){

@@ -28,7 +28,6 @@ export class Graph{
         let newNode = new Node(x, y, number, label);
         newNode.draw();
         this.nodes.push(newNode);
-        console.log(this.nodes);
     }
 
     addEdge(fromNode, toNode){
@@ -37,7 +36,6 @@ export class Graph{
         this.edges.push(newEdge);
         this.clearSelectedNode();
 
-        console.log(this.edges);
     }
 
     removeNode(node){
@@ -138,17 +136,30 @@ export class Graph{
     }
 
     loadFromJson(json){
-        const data = JSON.parse(json);
+        const {nodes,edges} = JSON.parse(json);
 
-        this.clearNodes();
+        this.clearGraph();
 
-        data.nodes.map(node => this.addNode(node.x,node.y,node.number,node.label));
+        nodes.forEach(({x,y,number,label}) => {
+            this.addNode(x,y,number,label)
+        });
 
-        this.clearEdges();
 
-        data.edges.map(edge => this.addEdge(edge.fromNode, edge.toNode));
+        edges.forEach((fromNode, toNode) => {
+           const fromIndex = Number(fromNode.number) - 1;
+           const toIndex = Number(toNode.number) - 1;
+
+           if(this.nodes[fromIndex] && this.nodes[toIndex]) this.addEdge(this.nodes[fromIndex],this.nodes[toIndex]);
+        });
+
+        edges.map(edge => this.addEdge(this.nodes[Number(edge.fromNode.number)-1],this.nodes[Number(edge.toNode.number) - 1]));
 
         this.redrawGraph();
+    }
+
+    clearGraph(){
+        this.clearEdges();
+        this.clearNodes();
     }
 
     clearNodes(){

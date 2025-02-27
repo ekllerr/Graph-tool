@@ -7,6 +7,7 @@ export const ctx = canvas.getContext("2d");
 export const identifierInput = document.getElementById("nodeIdentifier");
 export const saveGraphButton = document.getElementById("saveGraph");
 export const loadGraphInput = document.getElementById("loadGraph");
+export const clearGraphButton = document.getElementById("clearGraph");
 
 const width = 500;
 const height = 500;
