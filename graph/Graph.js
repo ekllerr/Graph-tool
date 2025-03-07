@@ -23,9 +23,12 @@ export class Graph{
 
     addNode(x,y){
         let number = this.nodes.length > 0 ? this.nodes[this.nodes.length - 1].number + 1 : 1;
+
         let label = this.getNodeLabel(number -1);
+
         let newNode = new Node(x, y, number, label);
         newNode.draw();
+
         this.nodes.push(newNode);
     }
 
@@ -35,26 +38,100 @@ export class Graph{
             (edge.fromNode === toNode && edge.toNode === fromNode)
         );
 
-        const existingEdgesCount = existingEdges.length;
 
-        const offset = this.calculateOffset(existingEdgesCount);
+        const edgeCount = existingEdges.length;
+        let isLastEdgeSameDirection;
+
+        if(existingEdges.length>0) isLastEdgeSameDirection = existingEdges[edgeCount - 1].fromNode === fromNode;
+
+        let offset;
+
+        if(isLastEdgeSameDirection) offset = this.calculateOffset(fromNode, toNode);
+        else offset = this.calculateOffset(fromNode,toNode);
+
 
         let newEdge = new Edge(fromNode, toNode,offset);
+
         newEdge.draw(fromNode,toNode,offset);
+
         this.edges.push(newEdge);
 
         this.clearSelectedNode();
-        console.log("existing edges: " + existingEdgesCount + ", new edge offset: " + newEdge.offset);
-    }
+        // console.log("existing edges: " + existingEdgesCount + ", new edge offset: " + newEdge.offset);
 
-    calculateOffset(existingEdgeCount){
-        const baseOffset = 15;
 
-        if(existingEdgeCount === 0){
-            return 0;
+
+       /* const existingEdges = this.edges.filter(edge =>
+            (edge.fromNode === fromNode && edge.toNode === toNode) ||
+            (edge.fromNode === toNode && edge.toNode === fromNode)
+        );
+
+        const edgeCount = existingEdges.length;
+        let isLastEdgeSameDirection = false;
+
+        if (edgeCount > 0) {
+            isLastEdgeSameDirection = existingEdges[edgeCount - 1].fromNode === fromNode;
         }
 
-        return baseOffset * (existingEdgeCount % 2 === 0 ? 1 : -1) * Math.floor((existingEdgeCount + 1) / 2);
+        let offset = this.calculateOffset(toNode, fromNode, edgeCount,isLastEdgeSameDirection);
+        if(isLastEdgeSameDirection) offset *= -1
+        /!*if(isLastEdgeSameDirection){
+            offset = this.calculateOffset( toNode,fromNode, edgeCount, isLastEdgeSameDirection);
+        }else{
+            offset = this.calculateOffset(fromNode,toNode,edgeCount, isLastEdgeSameDirection);
+        }*!/
+
+        let newEdge = new Edge(fromNode, toNode, offset);
+        newEdge.draw(fromNode, toNode, offset);
+
+
+        this.edges.push(newEdge);
+        this.clearSelectedNode();*/
+    }
+
+    calculateOffset(fromNode, toNode/*, edgeCount, isLastEdgeSameDirection*/){
+        /*const baseOffset = 10;
+
+        if (edgeCount === 0) return 0;
+
+        // Визначаємо напрямок офсету в залежності від напрямку останнього ребра
+        let directionMultiplier = isLastEdgeSameDirection ? 1 : -1;
+
+        // Обчислюємо офсет на основі кількості існуючих ребер
+        let offset = baseOffset * directionMultiplier * Math.ceil(edgeCount/ 2);
+
+        console.log(offset);
+
+        return offset;*/
+        const existingEdges = this.edges.filter(edge =>
+            (edge.fromNode === fromNode && edge.toNode === toNode) ||
+            (edge.fromNode === toNode && edge.toNode === fromNode)
+        );
+
+        const baseOffset = 10;
+
+        const edgeCount = existingEdges.length;
+
+        if(edgeCount === 0) return 0;
+
+        /*const sameDirectionEdges = existingEdges.map(edge => edge.fromNode === fromNode && edge.toNode === toNode);
+        const oppositeDirectionEdges = existingEdges.map(edge => edge.fromNode === toNode && edge.toNode === fromNode);
+
+        const sameDirectionCount = sameDirectionEdges.length;
+        const oppositeDirectionCount = oppositeDirectionEdges.length;*/
+
+        const isLastEdgeSameDirection = existingEdges[existingEdges.length - 1].fromNode === fromNode;
+
+        console.log(fromNode,toNode, isLastEdgeSameDirection, edgeCount%2)
+
+        if(isLastEdgeSameDirection) [fromNode, toNode] = [toNode, fromNode];
+
+        let offset = baseOffset * (isLastEdgeSameDirection % 2 === 0 ? -1 : 1) * Math.ceil(edgeCount / 2);
+
+        console.log(offset);
+
+        return offset;
+
     }
 
     removeNode(node){

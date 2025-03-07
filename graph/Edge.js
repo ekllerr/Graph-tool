@@ -52,8 +52,6 @@ export class Edge {
             y: mid.y + normalizedVector.y * offset
         };
 
-        console.log(`offset for edge between nodes: ${start} and ${end} is: ${offset}`);
-
         ctx.beginPath();
         ctx.moveTo(start.x, start.y);
         ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, end.x, end.y);
