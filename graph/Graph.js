@@ -33,26 +33,11 @@ export class Graph{
     }
 
     addEdge(fromNode, toNode){
-        const existingEdges = this.edges.filter(edge =>
-            (edge.fromNode === fromNode && edge.toNode === toNode) ||
-            (edge.fromNode === toNode && edge.toNode === fromNode)
-        );
-
-        const edgeCount = existingEdges.length;
-
-        const isLastEdgeSameDirection = existingEdges.length > 0 ? existingEdges[existingEdges.length - 1].fromNode === fromNode : false;
-
-        let offset = this.calculateOffset(edgeCount);
+        let offset = this.calculateOffset(fromNode, toNode);
         // console.log(offset, isLastEdgeSameDirection);
 
 
-        if(!isLastEdgeSameDirection && offset < 0){
-            offset *= -1;
-            // console.log("offset multiplied by -1")
-        }
-        if(isLastEdgeSameDirection){
-            offset *= -1;
-        }
+
 
         // console.log(fromNode, toNode);
 
@@ -65,10 +50,31 @@ export class Graph{
         this.clearSelectedNode();
     }
 
-    calculateOffset(edgeCount){
+    calculateOffset(fromNode, toNode){
         const baseOffset = 10;
 
-        return baseOffset * (edgeCount % 2 === 0 ? 1 : -1) * Math.ceil(edgeCount / 2);
+        const existingEdges = this.edges.filter(edge =>
+            (edge.fromNode === fromNode && edge.toNode === toNode) ||
+            (edge.fromNode === toNode && edge.toNode === fromNode)
+        );
+
+        const edgeCount = existingEdges.length;
+
+        if(edgeCount === 0) return 0;
+
+        const isLastEdgeSameDirection = existingEdges[existingEdges.length - 1].fromNode === fromNode;
+
+        let offset = baseOffset * (edgeCount % 2 === 0 ? 1 : -1) * Math.ceil(edgeCount / 2);
+
+        if(!isLastEdgeSameDirection && offset < 0){
+            offset *= -1;
+            // console.log("offset multiplied by -1")
+        }
+        if(isLastEdgeSameDirection){
+            offset *= -1;
+        }
+
+        return offset;
     }
 
     removeNode(node){
