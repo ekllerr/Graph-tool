@@ -15,33 +15,78 @@ canvas.width = width;
 canvas.height = height;
 
 
-export const nodeRadius = 9;
+export const nodeRadius = 10;
 
 export const graph = new Graph();
 
 setUpEventListeners(canvas);
 
-/*
-const fromNode = new Node(10,10,1,"A");
-fromNode.draw();
-const toNode = new Node(200,150,2,"B");
-toNode.draw();
-graph.nodes.push(fromNode,toNode);
-graph.addEdge(toNode, fromNode);
-graph.addEdge(fromNode, toNode);
-graph.addEdge(toNode, fromNode);
-graph.addEdge(fromNode, toNode);
-graph.addEdge(toNode, fromNode);
-graph.addEdge(fromNode, toNode);
-graph.addEdge(toNode, fromNode);
-graph.addEdge(fromNode, toNode);
-graph.addEdge(toNode, fromNode);
-graph.addEdge(fromNode, toNode);
-graph.addEdge(toNode, fromNode);
-graph.addEdge(fromNode, toNode);
-graph.addEdge(toNode, fromNode);
+
+    const fromNode = new Node(10,10,1,"A");
+    fromNode.draw();
+    const toNode = new Node(200,150,2,"B");
+    toNode.draw();
+    graph.nodes.push(fromNode,toNode);
+    graph.addEdge(toNode, fromNode);
+    graph.addEdge(fromNode, toNode);
+    graph.addEdge(toNode, fromNode);
+    graph.addEdge(fromNode, toNode);
+    graph.addEdge(toNode, fromNode);
+    graph.addEdge(fromNode, toNode);
+    graph.addEdge(toNode, fromNode);
+    graph.addEdge(fromNode, toNode);
+    graph.addEdge(toNode, fromNode);
+    graph.addEdge(fromNode, toNode);
+    graph.addEdge(toNode, fromNode);
+    graph.addEdge(fromNode, toNode);
+    graph.addEdge(toNode, fromNode);
 
 
-let offset = graph.calculateOffset(0);
-const edge1 = new Edge(fromNode, toNode, offset);
-*/
+    const fromNode2 = new Node(200,300, 3, "C");
+    const toNode2 = new Node(400,350, 4, "D");
+
+    fromNode2.draw();
+    toNode2.draw();
+
+    graph.nodes.push(fromNode2,toNode2);
+
+    graph.addEdge(fromNode2,toNode2);
+    graph.addEdge(fromNode2,toNode2);
+    graph.addEdge(fromNode2,toNode2);
+    graph.addEdge(fromNode2,toNode2);
+    graph.addEdge(fromNode2,toNode2);
+    graph.addEdge(fromNode2,toNode2);
+    graph.addEdge(fromNode2,toNode2);
+    graph.addEdge(fromNode2,toNode2);
+    graph.addEdge(fromNode2,toNode2);
+    graph.addEdge(fromNode2,toNode2);
+    graph.addEdge(fromNode2,toNode2);
+    graph.addEdge(fromNode2,toNode2);
+    graph.addEdge(fromNode2,toNode2);
+
+    const fromNode3 = new Node(197, 222, 5, "E");
+    const toNode3 = new Node(318, 244, 6, "F");
+    fromNode3.draw();
+    toNode3.draw();
+    graph.nodes.push(fromNode3, toNode3);
+
+    graph.addEdge(fromNode3,toNode3);
+    graph.addEdge(toNode3, fromNode3);
+    graph.addEdge(toNode3, fromNode3);
+    graph.addEdge(fromNode3,toNode3);
+    graph.addEdge(fromNode3,toNode3);
+    graph.addEdge(fromNode3,toNode3);
+    graph.addEdge(toNode3, fromNode3);
+    graph.addEdge(fromNode3,toNode3);
+    graph.addEdge(fromNode3,toNode3);
+    graph.addEdge(fromNode3,toNode3);
+    graph.addEdge(fromNode3,toNode3);
+    graph.addEdge(toNode3, fromNode3);
+    graph.addEdge(fromNode3,toNode3);
+    graph.addEdge(fromNode3,toNode3);
+    graph.addEdge(toNode3, fromNode3);
+    graph.addEdge(toNode3, fromNode3);
+    graph.addEdge(toNode3, fromNode3);
+    graph.addEdge(toNode3, fromNode3);
+    graph.addEdge(toNode3, fromNode3);
+    graph.addEdge(fromNode3,toNode3);
