@@ -19,6 +19,12 @@ function setUpCanvasListeners(){
     canvas.addEventListener("mouseup", handleMouseUp);
 }
 
+function setUpInputsListeners(){
+    identifierInput.addEventListener("input", () => {
+        graph.redrawGraph();
+    });
+}
+
 function handleCanvasClick(e){
     let [x,y] = getClientCoordinates(e);
     let clickedNode = null;
@@ -100,12 +106,6 @@ function handleMouseUp(){
         graph.clearDraggingNode();
         graph.redrawGraph();
     }
-}
-
-function setUpInputsListeners(){
-    identifierInput.addEventListener("input", () => {
-        graph.redrawGraph();
-    })
 }
 
 function getClientCoordinates(e){

@@ -41,21 +41,27 @@ export class Edge {
     }
 
     drawBezierEdge(start, end, offset){
+        const controlPoint = this.calculateControlPoint(start,end,offset);
+
+        console.log(`control point: (${controlPoint.x},${controlPoint.y})`);
+
+        ctx.beginPath();
+        ctx.moveTo(start.x, start.y);
+        ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, end.x, end.y);
+        ctx.stroke();
+    }
+
+    calculateControlPoint(start,end,offset){
         const mid = {x: (start.x + end.x) / 2,y: (start.y + end.y) / 2};
 
         const vector = {x: end.x - start.x, y: end.y - start.y};
         const perpendicular = {x: -vector.y, y: vector.x};
 
         const normalizedVector = this.normalizeVector(perpendicular);
-        const controlPoint = {
+        return {
             x: mid.x + normalizedVector.x * offset,
             y: mid.y + normalizedVector.y * offset
         };
-
-        ctx.beginPath();
-        ctx.moveTo(start.x, start.y);
-        ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, end.x, end.y);
-        ctx.stroke();
     }
 
     normalizeVector(vector) {

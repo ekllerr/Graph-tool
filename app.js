@@ -1,7 +1,6 @@
 import {setUpEventListeners} from "./utils/domUtils.js";
 import {Graph} from "./graph/Graph.js";
 import {Node} from "./graph/Node.js";
-import {Edge} from "./graph/Edge.js";
 
 export const canvas = document.getElementById("canvas");
 // const canvasRect = canvas.getBoundingClientRect();
@@ -29,7 +28,9 @@ setUpEventListeners(canvas);
     graph.nodes.push(fromNode,toNode);
     graph.addEdge(toNode, fromNode);
     graph.addEdge(fromNode, toNode);
-    graph.addEdge(toNode, fromNode);
+    graph.addEdge(fromNode, toNode);
+    graph.addEdge(fromNode, toNode);
+    /*graph.addEdge(toNode, fromNode);
     graph.addEdge(fromNode, toNode);
     graph.addEdge(toNode, fromNode);
     graph.addEdge(fromNode, toNode);
@@ -90,3 +91,4 @@ setUpEventListeners(canvas);
     graph.addEdge(toNode3, fromNode3);
     graph.addEdge(toNode3, fromNode3);
     graph.addEdge(fromNode3,toNode3);
+*/

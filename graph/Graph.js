@@ -34,15 +34,8 @@ export class Graph{
 
     addEdge(fromNode, toNode){
         let offset = this.calculateOffset(fromNode, toNode);
-        // console.log(offset, isLastEdgeSameDirection);
-
-
-
-
-        // console.log(fromNode, toNode);
 
         const newEdge = new Edge(fromNode, toNode,offset);
-
         newEdge.draw(fromNode,toNode,offset);
 
         this.edges.push(newEdge);
@@ -51,7 +44,7 @@ export class Graph{
     }
 
     calculateOffset(fromNode, toNode){
-        const baseOffset = 10;
+        const baseOffset = 15;
 
         const existingEdges = this.edges.filter(edge =>
             (edge.fromNode === fromNode && edge.toNode === toNode) ||
@@ -68,7 +61,6 @@ export class Graph{
 
         if(!isLastEdgeSameDirection && offset < 0){
             offset *= -1;
-            // console.log("offset multiplied by -1")
         }
         if(isLastEdgeSameDirection){
             offset *= -1;
