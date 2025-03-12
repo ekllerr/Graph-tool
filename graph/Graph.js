@@ -13,11 +13,6 @@ export class Graph{
         this.tempEdge = null;
     }
 
-    /* todo
-    *   додати можливість створення кратних ребер
-    *   додати можливість створити орієнтований граф
-    * */
-
     addNode(x,y,number=null,label=null){
         if(!number){
             number = this.nodes.length > 0 ? this.nodes[this.nodes.length - 1].number + 1 : 1;
