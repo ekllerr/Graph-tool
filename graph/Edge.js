@@ -43,7 +43,7 @@ export class Edge {
     drawBezierEdge(start, end, offset){
         const controlPoint = this.calculateControlPoint(start,end,offset);
 
-        console.log(`control point: (${controlPoint.x},${controlPoint.y})`);
+        // console.log(`control point: (${controlPoint.x},${controlPoint.y})`);
 
         ctx.beginPath();
         ctx.moveTo(start.x, start.y);

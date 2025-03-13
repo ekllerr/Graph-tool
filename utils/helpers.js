@@ -35,14 +35,9 @@ export function isCursorOnEdge(edge,cursor,threshold=4){
         return distance < threshold && dotProduct1>=0 && dotProduct2;
     }
 
+    const q = edge.calculateControlPoint({x:Ax, y:Ay},{x:Bx, y:By}, edge.offset);
 
-    const q = edge.calculateControlPoint({x:Ax, y:Ax},{x:Bx, y:By}, edge.offset);
-
-    console.log(`calculated control point(q): (${q.x}, ${q.y})`);
-
-    function pointToCurveDistance(point, start, end, q, offset){
-        point.x -= offset;
-        point.y -= offset;
+    function pointToCurveDistance(point, start, end, q){
 
         let minDist = Infinity;
 
@@ -59,6 +54,5 @@ export function isCursorOnEdge(edge,cursor,threshold=4){
         return minDist;
     }
 
-    // console.log(`calculated for Edge with offset ${edge.offset}`)
-    return pointToCurveDistance(cursor,{x: Ax, y: Ay},{x: Bx,y: By}, q, edge.offset) < threshold;
+    return pointToCurveDistance(cursor,{x: Ax, y: Ay},{x: Bx,y: By}, q) < threshold;
 }

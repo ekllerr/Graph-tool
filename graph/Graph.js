@@ -13,14 +13,6 @@ export class Graph{
         this.tempEdge = null;
     }
 
-    /* todo
-    *   додати можливість створення кратних ребер
-    *   додати можливість створити орієнтований граф
-    *   fix multiple edges creation
-    *   add collision for multiple edges
-    *   if only one edge remains after removing the edges, it must be straight
-    * */
-
     addNode(x,y){
         let number = this.nodes.length > 0 ? this.nodes[this.nodes.length - 1].number + 1 : 1;
 

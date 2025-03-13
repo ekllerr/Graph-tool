@@ -20,10 +20,9 @@ export const graph = new Graph();
 
 setUpEventListeners(canvas);
 
-
-    const fromNode = new Node(10,10,1,"A");
+    const fromNode = new Node(140,180,1,"A");
     fromNode.draw();
-    const toNode = new Node(200,150,2,"B");
+    const toNode = new Node(300,250,2,"B");
     toNode.draw();
     graph.nodes.push(fromNode,toNode);
     graph.addEdge(toNode, fromNode);
