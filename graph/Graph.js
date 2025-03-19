@@ -28,7 +28,7 @@ export class Graph{
         let offset = this.calculateOffset(fromNode, toNode);
 
         const newEdge = new Edge(fromNode, toNode,offset);
-        newEdge.draw(fromNode,toNode,offset);
+        newEdge.draw();
 
         this.edges.push(newEdge);
 
@@ -36,7 +36,7 @@ export class Graph{
     }
 
     calculateOffset(fromNode, toNode, existingEdges){
-        const baseOffset = 15;
+        const baseOffset = 20;
 
         if(!existingEdges) existingEdges = this.getEdgesBetweenNodes(fromNode, toNode);
 
@@ -117,6 +117,7 @@ export class Graph{
     redrawEdges(){
         for(let edge of this.edges){
             edge.draw();
+            if(edge.isDirected !== 'false') edge.drawArrow();
         }
     }
 

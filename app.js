@@ -26,9 +26,10 @@ setUpEventListeners(canvas);
     toNode.draw();
     graph.nodes.push(fromNode,toNode);
     graph.addEdge(toNode, fromNode);
+    console.log(`Added edge from: ${toNode.label} to: ${fromNode.label}`)
+    /*graph.addEdge(fromNode, toNode);
     graph.addEdge(fromNode, toNode);
-    graph.addEdge(fromNode, toNode);
-    graph.addEdge(fromNode, toNode);
+    graph.addEdge(fromNode, toNode);*/
     /*graph.addEdge(toNode, fromNode);
     graph.addEdge(fromNode, toNode);
     graph.addEdge(toNode, fromNode);

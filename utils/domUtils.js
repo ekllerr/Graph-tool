@@ -29,6 +29,34 @@ function handleCanvasClick(e){
     let [x,y] = getClientCoordinates(e);
     let clickedNode = null;
 
+    for(let edge of graph.edges){
+        if(findClickedNode(x,y)) continue;
+        if(isCursorOnEdge(edge,{x,y})){
+            if(edge.isDirected === 'false'){
+                edge.isDirected = 'directed';
+                console.log('changed direction to directed');
+                // console.log(`edge nodes not changed: from: ${edge.fromNode.label} to: ${edge.toNode.label}`);
+                graph.redrawGraph();
+                return;
+            }
+            if(edge.isDirected === 'directed'){
+                edge.isDirected = 'reverse';
+                console.log('changed direction to reverse');
+                [edge.fromNode, edge.toNode] = [edge.toNode, edge.fromNode];
+                edge.offset *= -1;
+                graph.redrawGraph();
+                return;
+            }
+            if(edge.isDirected === 'reverse'){
+                edge.isDirected = 'false';
+                console.log('changed direction to false');
+                graph.redrawGraph();
+                return;
+            }
+            return;
+        }
+    }
+
     if(graph.justDragged){
         graph.justDragged = false;
         return;
