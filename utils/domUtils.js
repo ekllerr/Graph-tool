@@ -1,4 +1,4 @@
-import {graph, canvas, identifierInput} from "../app.js";
+import {graph, canvas, identifierInput, toggleEdgeDirectionInput} from "../app.js";
 import {findClickedNode, isCursorOnEdge} from "./helpers.js";
 
 export function setUpEventListeners(){
@@ -23,6 +23,21 @@ function setUpInputsListeners(){
     identifierInput.addEventListener("input", () => {
         graph.redrawGraph();
     });
+
+    toggleEdgeDirectionInput.addEventListener("input", () => {
+        if(toggleEdgeDirectionInput.checked){
+            for(const edge of graph.edges){
+                if(edge.isDirected === 'false') edge.isDirected = 'directed';
+            }
+        }
+        else{
+            for(const edge of graph.edges){
+                edge.isDirected = 'false';
+            }
+        }
+        graph.redrawGraph();
+    });
+
 }
 
 function handleCanvasClick(e){
@@ -34,14 +49,11 @@ function handleCanvasClick(e){
         if(isCursorOnEdge(edge,{x,y})){
             if(edge.isDirected === 'false'){
                 edge.isDirected = 'directed';
-                console.log('changed direction to directed');
-                // console.log(`edge nodes not changed: from: ${edge.fromNode.label} to: ${edge.toNode.label}`);
                 graph.redrawGraph();
                 return;
             }
             if(edge.isDirected === 'directed'){
                 edge.isDirected = 'reverse';
-                console.log('changed direction to reverse');
                 [edge.fromNode, edge.toNode] = [edge.toNode, edge.fromNode];
                 edge.offset *= -1;
                 graph.redrawGraph();
@@ -49,7 +61,6 @@ function handleCanvasClick(e){
             }
             if(edge.isDirected === 'reverse'){
                 edge.isDirected = 'false';
-                console.log('changed direction to false');
                 graph.redrawGraph();
                 return;
             }
