@@ -9,16 +9,18 @@
 <body>
 <canvas id="canvas"></canvas>
 <div>
-    <input type="button" value="Clear Graph" id="clearGraph">
-    <br>
     <label for="nodeIdentifier">Show numbers as node identifier</label>
     <input type="checkbox" id="nodeIdentifier">
     <br>
+    <input type="button" value="Clear Graph" id="clearGraph">
+    <br>
     <input type="button" value="Save graph" id="saveGraph">
-    <div>
-        <label for="loadGraph">Load Graph</label>
-        <input type="file" name="loadGraph" id="loadGraph">
-    </div>
+    <br>
+    <label for="loadGraph">Load Graph</label>
+    <input type="file" name="loadGraph" id="loadGraph">
+    <br>
+    <label for="toggleEdgeDirection">Make all edges directed</label>
+    <input type="checkbox" id="toggleEdgeDirection">
 </div>
 
 <script type="module" src="app.js"></script>

@@ -1,5 +1,8 @@
-import {graph, canvas, identifierInput, saveGraphButton, loadGraphInput, clearGraphButton} from "../app.js";
+
+import {graph, canvas, identifierInput, saveGraphButton, loadGraphInput, clearGraphButton, toggleEdgeDirectionInput} from "../app.js";
 import {findClickedNode, isCursorOnEdge, downloadGraphJson, loadGraphByJson} from "./helpers.js";
+
+
 
 export function setUpEventListeners(){
     setUpCanvasListeners();
@@ -19,7 +22,6 @@ function setUpCanvasListeners(){
     canvas.addEventListener("mouseup", handleMouseUp);
 }
 
-
 function setUpInputsListeners(){
     identifierInput.addEventListener("input", () => {
         graph.redrawGraph();
@@ -38,11 +40,51 @@ function setUpInputsListeners(){
         graph.redrawGraph();
         loadGraphInput.value = "";
     });
+
+    toggleEdgeDirectionInput.addEventListener("input", () => {
+        if(toggleEdgeDirectionInput.checked){
+            for(const edge of graph.edges){
+                if(edge.isDirected === 'false') edge.isDirected = 'directed';
+            }
+        }
+        else{
+            for(const edge of graph.edges){
+                edge.isDirected = 'false';
+            }
+        }
+        graph.redrawGraph();
+    });
+
+
 }
 
 function handleCanvasClick(e){
     let [x,y] = getClientCoordinates(e);
     let clickedNode = null;
+
+    for(let edge of graph.edges){
+        if(findClickedNode(x,y)) continue;
+        if(isCursorOnEdge(edge,{x,y})){
+            if(edge.isDirected === 'false'){
+                edge.isDirected = 'directed';
+                graph.redrawGraph();
+                return;
+            }
+            if(edge.isDirected === 'directed'){
+                edge.isDirected = 'reverse';
+                [edge.fromNode, edge.toNode] = [edge.toNode, edge.fromNode];
+                edge.offset *= -1;
+                graph.redrawGraph();
+                return;
+            }
+            if(edge.isDirected === 'reverse'){
+                edge.isDirected = 'false';
+                graph.redrawGraph();
+                return;
+            }
+            return;
+        }
+    }
 
     if(graph.justDragged){
         graph.justDragged = false;

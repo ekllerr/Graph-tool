@@ -20,18 +20,49 @@ export class Graph{
         if(!label){
             label = this.getNodeLabel(number -1);
         }
+
         let newNode = new Node(x, y, number, label);
         newNode.draw();
+
         this.nodes.push(newNode);
     }
 
     addEdge(fromNode, toNode){
-        let newEdge = new Edge(fromNode, toNode);
+        let offset = this.calculateOffset(fromNode, toNode);
+
+        const newEdge = new Edge(fromNode, toNode,offset);
         newEdge.draw();
+
         this.edges.push(newEdge);
+
         this.clearSelectedNode();
 
     }
+
+    calculateOffset(fromNode, toNode, existingEdges){
+        const baseOffset = 20;
+
+        if(!existingEdges) existingEdges = this.getEdgesBetweenNodes(fromNode, toNode);
+
+
+        const edgeCount = existingEdges.length;
+
+        if(edgeCount === 0) return 0;
+
+        const isLastEdgeSameDirection = existingEdges[existingEdges.length - 1].fromNode === fromNode;
+
+        let offset = baseOffset * (edgeCount % 2 === 0 ? 1 : -1) * Math.ceil(edgeCount / 2);
+
+        if(!isLastEdgeSameDirection && offset < 0){
+            offset *= -1;
+        }
+        if(isLastEdgeSameDirection){
+            offset *= -1;
+        }
+
+        return offset;
+    }
+
 
     removeNode(node){
         let index = this.nodes.indexOf(node);
@@ -64,7 +95,14 @@ export class Graph{
         if(index === -1) return;
 
         this.edges.splice(index, 1);
-        // this.redrawGraph();
+
+        const remainingEdges = this.getEdgesBetweenNodes(edge.fromNode, edge.toNode);
+
+        let orderedEdges  = [];
+        for(let i = 0; i < remainingEdges.length; i++) {
+            remainingEdges[i].offset = this.calculateOffset(remainingEdges[i].fromNode, edge.fromNode,orderedEdges );
+            orderedEdges .push(remainingEdges[i]);
+        }
     }
 
     redrawNodes(){
@@ -83,6 +121,7 @@ export class Graph{
     redrawEdges(){
         for(let edge of this.edges){
             edge.draw();
+            if(edge.isDirected !== 'false') edge.drawArrow();
         }
     }
 
@@ -101,6 +140,12 @@ export class Graph{
         tempEdge.draw();
     }
 
+    getEdgesBetweenNodes(fromNode, toNode){
+        return this.edges.filter(edge =>
+            (edge.fromNode === fromNode && edge.toNode === toNode) ||
+            (edge.fromNode === toNode && edge.toNode === fromNode)
+        );
+    }
 
     getNodeLabel(index){
         let label = "";

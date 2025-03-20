@@ -1,43 +1,121 @@
-import {ctx, nodeRadius} from "../app.js";
+import {ctx, nodeRadius, toggleEdgeDirectionInput} from "../app.js";
 
 export class Edge {
-    constructor(fromNode, toNode) {
+    constructor(fromNode, toNode, offset = 0, isDirected = 'false') {
         this.fromNode = fromNode;
         this.toNode = toNode;
+        this.isDirected = isDirected;
+        this.offset = offset;
+
     }
 
-    draw() {
+    draw(color = 'black') {
         const startPoint = {x: this.fromNode.x, y: this.fromNode.y};
         const endPoint = {x: this.toNode.x, y: this.toNode.y};
         const [start, end] = this.calculateEdgeEndpoints(startPoint, endPoint);
 
-        ctx.beginPath();
-        ctx.moveTo(start.x, start.y);
-        ctx.lineTo(end.x, end.y);
-        ctx.stroke();
+        this.drawBezierEdge(start,end, this.offset, color);
+
     }
 
     calculateEdgeEndpoints(startPoint, endPoint){
         const {x: Ax, y: Ay} = startPoint;
         const {x: Bx, y:By} = endPoint;
 
-        let dx = Bx - Ax;
-        let dy = By - Ay;
-        let distance = Math.sqrt(dx * dx + dy * dy);
+        const vector = {x: Bx - Ax, y: By - Ay};
+        const normalizedVector = this.normalizeVector(vector);
 
-        if(distance === 0) return;
-
-        //Normalize vector
-        let offsetX = (dx / distance) * nodeRadius;
-        let offsetY = (dy / distance) * nodeRadius;
+        if(!normalizedVector.x && !normalizedVector.y) return [startPoint, endPoint];
 
         // Calculate the start and end points of the edge, adjusting for the node radius,
         // so that the edge starts and ends at the node's border, not at its center.
-        let startX = Ax + offsetX;
-        let startY = Ay + offsetY;
-        let endX = Bx - offsetX;
-        let endY = By - offsetY;
+        const start = {
+            x: Ax + normalizedVector.x * nodeRadius,
+            y: Ay + normalizedVector.y * nodeRadius
+        }
+        const end = {
+            x: Bx - normalizedVector.x * nodeRadius,
+            y: By - normalizedVector.y * nodeRadius
+        }
 
-        return [{x:startX, y:startY}, {x:endX, y:endY}];
+        return [start,end];
+    }
+
+    drawBezierEdge(start, end, offset, color){
+        const controlPoint = this.calculateControlPoint(start,end,offset);
+
+        ctx.strokeStyle = color;
+
+        ctx.beginPath();
+        ctx.moveTo(start.x, start.y);
+        ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, end.x, end.y);
+        ctx.stroke();
+    }
+
+    drawArrow(){
+        const start = {
+            x: this.fromNode.x,
+            y: this.fromNode.y
+        }
+
+        const end = {
+            x: this.toNode.x,
+            y: this.toNode.y
+        }
+
+        const controlPoint = this.calculateControlPoint(start,end,this.offset);
+
+        const t = 0.5;
+
+        const mid = {
+            x: (1 - t) ** 2 * start.x + 2 * (1 - t) * t * controlPoint.x + t ** 2 * end.x,
+            y: (1 - t) ** 2 * start.y + 2 * (1 - t) * t * controlPoint.y + t ** 2 * end.y
+        }
+
+        const arrowSize = 10;
+        const angle = Math.atan2(start.y - end.y,start.x - end.x) /*- Math.PI*/;
+
+
+        const p1 = {
+            x: mid.x + arrowSize * Math.cos(angle - Math.PI/6),
+            y: mid.y + arrowSize * Math.sin(angle - Math.PI/6),
+        };
+
+        const p2 = {
+            x: mid.x + arrowSize * Math.cos(angle + Math.PI/6),
+            y: mid.y + arrowSize * Math.sin(angle + Math.PI/6),
+        }
+
+        ctx.beginPath();
+        ctx.moveTo(mid.x, mid.y);
+        ctx.lineTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.closePath()
+        ctx.fill();
+
+    }
+
+    calculateControlPoint(start,end,offset){
+        const mid = {x: (start.x + end.x) / 2,y: (start.y + end.y) / 2};
+
+        const vector = {x: end.x - start.x, y: end.y - start.y};
+        const perpendicular = {x: -vector.y, y: vector.x};
+
+        const normalizedVector = this.normalizeVector(perpendicular);
+        return {
+            x: mid.x + normalizedVector.x * offset,
+            y: mid.y + normalizedVector.y * offset
+        };
+    }
+
+    normalizeVector(vector) {
+        const length = Math.sqrt(vector.x ** 2 + vector.y ** 2);
+
+        if (length === 0) return;
+
+        return {
+            x: vector.x / length,
+            y: vector.y / length,
+        };
     }
 }

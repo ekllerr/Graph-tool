@@ -27,12 +27,35 @@ export function isCursorOnEdge(edge,cursor,threshold=4){
 
     if(edgeLength === 0) return;
 
-    const distance = Math.abs((By-Ay)*Cx - (Bx-Ax)*Cy + Bx*Ay - By*Ax)/edgeLength;
+    if(edge.offset === 0){
+        const distance = Math.abs((By-Ay)*Cx - (Bx-Ax)*Cy + Bx*Ay - By*Ax)/edgeLength;
+        const dotProduct1 = (Cx - Ax) * (Bx - Ax) + (Cy - Ay) * (By - Ay);
+        const dotProduct2 = (Cx - Bx) * (Ax - Bx) + (Cy - By) * (Ay - By);
 
-    const dotProduct1 = (Cx - Ax) * (Bx - Ax) + (Cy - Ay) * (By - Ay);
-    const dotProduct2 = (Cx - Bx) * (Ax - Bx) + (Cy - By) * (Ay - By);
+        return distance < threshold && dotProduct1>=0 && dotProduct2;
+    }
 
-    return distance < threshold && dotProduct1>=0 && dotProduct2;
+    const q = edge.calculateControlPoint({x:Ax, y:Ay},{x:Bx, y:By}, edge.offset);
+
+    function pointToCurveDistance(point, start, end, q){
+
+        let minDist = Infinity;
+
+        for (let t = 0; t <= 1; t += 0.01) {
+            let xt = (1 - t) ** 2 * start.x + 2 * (1 - t) * t * q.x + t ** 2 * end.x;
+            let yt = (1 - t) ** 2 * start.y + 2 * (1 - t) * t * q.y + t ** 2 * end.y;
+
+            let dist = Math.sqrt((point.x - xt) ** 2 + (point.y - yt) ** 2);
+            if (dist < minDist) {
+                minDist = dist;
+            }
+        }
+
+        return minDist;
+    }
+
+    return pointToCurveDistance(cursor,{x: Ax, y: Ay},{x: Bx,y: By}, q) < threshold;
+
 }
 
 export function downloadGraphJson(){
@@ -55,5 +78,5 @@ export function loadGraphByJson(e){
         const json = e.target.result;
         graph.loadFromJson(json);
     };
-    reader.readAsText(file); 
+    reader.readAsText(file);
 }
