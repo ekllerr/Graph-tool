@@ -1,12 +1,12 @@
 import {ctx, nodeRadius, toggleEdgeDirectionInput} from "../app.js";
 
 export class Edge {
-    constructor(fromNode, toNode, offset = 0, isDirected = 'false') {
+    constructor(fromNode, toNode, offset = 0, isDirected = 'false', weight = 0) {
         this.fromNode = fromNode;
         this.toNode = toNode;
         this.isDirected = isDirected;
         this.offset = offset;
-
+        this.weight = weight;
     }
 
     draw(color = 'black') {

@@ -27,10 +27,10 @@ export class Graph{
         this.nodes.push(newNode);
     }
 
-    addEdge(fromNode, toNode){
-        let offset = this.calculateOffset(fromNode, toNode);
+    addEdge(fromNode, toNode, offset=0, isDirected='false', weight=0){
+        if(!offset)offset = this.calculateOffset(fromNode, toNode);
 
-        const newEdge = new Edge(fromNode, toNode,offset);
+        const newEdge = new Edge(fromNode, toNode,offset, isDirected, weight);
         newEdge.draw();
 
         this.edges.push(newEdge);
@@ -168,7 +168,10 @@ export class Graph{
             })),
             edges: this.edges.map(edge => ({
                 fromNode: edge.fromNode,
-                toNode: edge.toNode
+                toNode: edge.toNode,
+                isDirected: edge.isDirected === 'false' ? edge.isDirected : 'directed',
+                offset: edge.offset,
+                weight: edge.weight
             }))
         }
 
@@ -185,11 +188,12 @@ export class Graph{
         });
 
 
-        edges.forEach((fromNode, toNode) => {
-           const fromIndex = Number(fromNode.number) - 1;
-           const toIndex = Number(toNode.number) - 1;
+        edges.forEach(edge => {
+           const fromIndex = Number(edge.fromNode.number) - 1;
+           const toIndex = Number(edge.toNode.number) - 1;
 
-           if(this.nodes[fromIndex] && this.nodes[toIndex]) this.addEdge(this.nodes[fromIndex],this.nodes[toIndex]);
+           console.log(edge)
+           if(this.nodes[fromIndex] && this.nodes[toIndex]) this.addEdge(this.nodes[fromIndex],this.nodes[toIndex], edge.offset, edge.isDirected, edge.weight);
         });
 
         edges.map(edge => this.addEdge(this.nodes[Number(edge.fromNode.number)-1],this.nodes[Number(edge.toNode.number) - 1]));
