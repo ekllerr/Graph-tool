@@ -11,7 +11,7 @@ export class Edge {
 
     draw(color = 'black') {
         if(this.fromNode === this.toNode){
-            this.drawLoop();
+            this.drawLoop(color);
             return;
         }
 
@@ -58,39 +58,35 @@ export class Edge {
         ctx.stroke();
     }
 
-    drawLoop(){
+    drawLoop(color){
         const loopRadius = this.offset === 0 ? nodeRadius * 1.5 : nodeRadius + Math.abs(this.offset/2);
         const direction = this.offset >= 0 ? 1 : -1;
         const [x,y] = [this.fromNode.x + loopRadius * direction, this.toNode.y];
 
         const theta = Math.asin(nodeRadius/loopRadius);
 
+        const startAnglePositive1 = 0;
+        const startAnglePositive2 = Math.PI + theta;
+        const endAnglePositive1 = Math.PI - theta;
+        const endAnglePositive2 = Math.PI * 2;
 
-        function drawLoopForPositiveOffset(){
-            const startAngle1 = 0;
-            const startAngle2 = Math.PI + theta;
-            const endAngle1 = Math.PI - theta;
-            const endAngle2 = Math.PI * 2;
+        const startAngleNegative = theta;
+        const endAngleNegative = Math.PI * 2 - theta;
 
+        ctx.strokeStyle = color;
+
+        function drawSegment(cx, cy, r, startAngle, endAngle){
             ctx.beginPath();
-            ctx.arc(x, y, loopRadius, startAngle1, endAngle1);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.arc(x, y, loopRadius, startAngle2, endAngle2);
-            ctx.stroke();
-        }
-
-        function drawLoopForNegativeOffset(){
-            const startAngle = theta;
-            const endAngle = Math.PI * 2 - theta;
-
-            ctx.beginPath();
-            ctx.arc(x, y, loopRadius, startAngle, endAngle);
+            ctx.arc(cx,cy,r,startAngle, endAngle);
             ctx.stroke();
         }
 
-        this.offset >= 0 ? drawLoopForPositiveOffset() : drawLoopForNegativeOffset();
-
+        if(this.offset >= 0){
+            drawSegment(x,y,loopRadius,startAnglePositive1,endAnglePositive1);
+            drawSegment(x,y,loopRadius,startAnglePositive2,endAnglePositive2);
+        } else{
+            drawSegment(x,y,loopRadius,startAngleNegative,endAngleNegative);
+        }
     }
 
     drawArrow(){
