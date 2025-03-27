@@ -1,4 +1,4 @@
-import {ctx, nodeRadius, toggleEdgeDirectionInput} from "../app.js";
+import {ctx, graph, nodeRadius, toggleEdgeDirectionInput} from "../../app.js";
 
 export class Edge {
     constructor(fromNode, toNode, offset = 0, isDirected = 'false', weight = 0) {
@@ -10,9 +10,15 @@ export class Edge {
     }
 
     draw(color = 'black') {
+        if(this.fromNode === this.toNode){
+            this.drawLoop();
+            return;
+        }
+
         const startPoint = {x: this.fromNode.x, y: this.fromNode.y};
         const endPoint = {x: this.toNode.x, y: this.toNode.y};
         const [start, end] = this.calculateEdgeEndpoints(startPoint, endPoint);
+
 
         this.drawBezierEdge(start,end, this.offset, color);
 
@@ -50,6 +56,41 @@ export class Edge {
         ctx.moveTo(start.x, start.y);
         ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, end.x, end.y);
         ctx.stroke();
+    }
+
+    drawLoop(){
+        const loopRadius = this.offset === 0 ? nodeRadius * 1.5 : nodeRadius + Math.abs(this.offset/2);
+        const direction = this.offset >= 0 ? 1 : -1;
+        const [x,y] = [this.fromNode.x + loopRadius * direction, this.toNode.y];
+
+        const theta = Math.asin(nodeRadius/loopRadius);
+
+
+        function drawLoopForPositiveOffset(){
+            const startAngle1 = 0;
+            const startAngle2 = Math.PI + theta;
+            const endAngle1 = Math.PI - theta;
+            const endAngle2 = Math.PI * 2;
+
+            ctx.beginPath();
+            ctx.arc(x, y, loopRadius, startAngle1, endAngle1);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(x, y, loopRadius, startAngle2, endAngle2);
+            ctx.stroke();
+        }
+
+        function drawLoopForNegativeOffset(){
+            const startAngle = theta;
+            const endAngle = Math.PI * 2 - theta;
+
+            ctx.beginPath();
+            ctx.arc(x, y, loopRadius, startAngle, endAngle);
+            ctx.stroke();
+        }
+
+        this.offset >= 0 ? drawLoopForPositiveOffset() : drawLoopForNegativeOffset();
+
     }
 
     drawArrow(){

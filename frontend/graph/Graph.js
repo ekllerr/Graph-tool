@@ -192,7 +192,6 @@ export class Graph{
            const fromIndex = Number(edge.fromNode.number) - 1;
            const toIndex = Number(edge.toNode.number) - 1;
 
-           console.log(edge)
            if(this.nodes[fromIndex] && this.nodes[toIndex]) this.addEdge(this.nodes[fromIndex],this.nodes[toIndex], edge.offset, edge.isDirected, edge.weight);
         });
 

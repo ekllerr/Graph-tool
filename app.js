@@ -1,5 +1,5 @@
-import {setUpEventListeners} from "./utils/domUtils.js";
-import {Graph} from "./graph/Graph.js";
+import {setUpEventListeners} from "./frontend/utils/domUtils.js";
+import {Graph} from "./frontend/graph/Graph.js";
 
 export const canvas = document.getElementById("canvas");
 export const ctx = canvas.getContext("2d");

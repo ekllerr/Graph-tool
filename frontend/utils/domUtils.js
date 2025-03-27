@@ -1,5 +1,5 @@
 
-import {graph, canvas, identifierInput, saveGraphButton, loadGraphInput, clearGraphButton, toggleEdgeDirectionInput} from "../app.js";
+import {graph, canvas, identifierInput, saveGraphButton, loadGraphInput, clearGraphButton, toggleEdgeDirectionInput} from "../../app.js";
 import {findClickedNode, isCursorOnEdge, downloadGraphJson, loadGraphByJson} from "./helpers.js";
 
 
@@ -126,6 +126,7 @@ function handleRightClick(e){
         if(isCursorOnEdge(edge,{x,y})){
             graph.removeEdge(edge);
             graph.redrawGraph();
+            return;
         }
     }
 }
@@ -173,12 +174,18 @@ function getClientCoordinates(e){
 function handleNodeClick(clickedNode){
     if(!graph.selectedNode){
         graph.selectedNode = clickedNode;
-    } else if(graph.selectedNode !== clickedNode){
+        graph.redrawGraph();
+    } /*else if(graph.selectedNode !== clickedNode){
         graph.addEdge(graph.selectedNode,clickedNode);
         graph.clearTempEdge();
         graph.redrawGraph();
     } else{
         graph.clearSelectedNode();
+        graph.clearTempEdge();
+        graph.redrawGraph();
+    }*/
+    else{
+        graph.addEdge(graph.selectedNode, clickedNode);
         graph.clearTempEdge();
         graph.redrawGraph();
     }

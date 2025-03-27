@@ -1,4 +1,4 @@
-import {ctx, nodeRadius, identifierInput} from "../app.js";
+import {ctx, nodeRadius, identifierInput} from "../../app.js";
 
 export class Node {
     constructor(x, y, number, label) {
