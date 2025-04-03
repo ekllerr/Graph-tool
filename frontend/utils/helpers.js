@@ -1,4 +1,4 @@
-import  {graph, nodeRadius, canvas, ctx} from "../../app.js";
+import {graph, nodeRadius, canvas, ctx, loadGraphInput} from "../../app.js";
 
 export function findClickedNode(x, y) {
     for (let i = 0; i < graph.nodes.length; i++) {
@@ -19,43 +19,75 @@ export function clearCanvas(){
 }
 
 export function isCursorOnEdge(edge,cursor,threshold=4){
-    const {x:Ax, y: Ay} = edge.fromNode;
-    const {x:Bx, y: By} = edge.toNode;
-    const {x:Cx, y:Cy} = cursor;
+    if(edge.fromNode === edge.toNode) return isCursorOnLoop(edge,cursor,threshold);
 
-    const edgeLength = Math.sqrt((By-Ay)**2 + (Bx-Ax)**2);
+    const edgeLength = Math.sqrt((edge.toNode.y-edge.fromNode.y)**2 + (edge.toNode.x-edge.fromNode.x)**2);
 
     if(edgeLength === 0) return;
 
-    if(edge.offset === 0){
-        const distance = Math.abs((By-Ay)*Cx - (Bx-Ax)*Cy + Bx*Ay - By*Ax)/edgeLength;
-        const dotProduct1 = (Cx - Ax) * (Bx - Ax) + (Cy - Ay) * (By - Ay);
-        const dotProduct2 = (Cx - Bx) * (Ax - Bx) + (Cy - By) * (Ay - By);
+    if(edge.offset === 0) return isCursorOnStraightEdge(edge.fromNode, edge.toNode, cursor, edgeLength, threshold);
 
-        return distance < threshold && dotProduct1>=0 && dotProduct2;
+    return isCursorOnCurve(edge,cursor,threshold);
+}
+
+function isCursorOnLoop(edge,cursor,threshold){
+    const loopRadius = edge.offset === 0 ? nodeRadius * 1.5 : nodeRadius + Math.abs(edge.offset / 2);
+    const direction = edge.offset >= 0 ? 1 : -1;
+    const [x, y] = [edge.fromNode.x + loopRadius * direction, edge.fromNode.y];
+
+    // Compute distance from click to loop center
+    const dist = Math.sqrt((cursor.x - x) ** 2 + (cursor.y - y) ** 2);
+
+    // Check if the click is near the loop's radius
+    if (Math.abs(dist - loopRadius) > threshold) return false;
+
+    // Compute click angle
+    let thetaClick = Math.atan2(cursor.y - y, cursor.x - x);
+    if (thetaClick < 0) thetaClick += 2 * Math.PI; // Normalize to [0, 2π]
+
+    const theta = Math.asin(nodeRadius / loopRadius);
+    const startAnglePos1 = 0, endAnglePos1 = Math.PI - theta;
+    const startAnglePos2 = Math.PI + theta, endAnglePos2 = Math.PI * 2;
+    const startAngleNeg = theta, endAngleNeg = Math.PI * 2 - theta;
+
+    // Check if the angle is within the loop's drawn segments
+    if (edge.offset >= 0) {
+        console.log( (startAnglePos1 <= thetaClick && thetaClick <= endAnglePos1) ||
+            (startAnglePos2 <= thetaClick && thetaClick <= endAnglePos2));
+        return (startAnglePos1 <= thetaClick && thetaClick <= endAnglePos1) ||
+            (startAnglePos2 <= thetaClick && thetaClick <= endAnglePos2);
+    } else {
+        console.log(startAngleNeg <= thetaClick && thetaClick <= endAngleNeg    )
+        return startAngleNeg <= thetaClick && thetaClick <= endAngleNeg;
     }
+}
 
-    const q = edge.calculateControlPoint({x:Ax, y:Ay},{x:Bx, y:By}, edge.offset);
+function isCursorOnStraightEdge(a,b,c,edgeLength,threshold){
+    const distance = Math.abs((b.y-a.y)*c.x - (b.x-a.x)*c.y + b.x*a.y - b.y*a.x)/edgeLength;
+    const dotProduct1 = (c.x - a.x) * (b.x - a.x) + (c.y - a.y) * (b.y - a.y);
+    const dotProduct2 = (c.x - b.x) * (a.x - b.x) + (c.y - b.y) * (a.y - b.y);
 
-    function pointToCurveDistance(point, start, end, q){
+    return distance < threshold && dotProduct1>=0 && dotProduct2;
+}
 
-        let minDist = Infinity;
+function isCursorOnCurve(edge,cursor,threshold){
+    const q = edge.calculateControlPoint(edge.fromNode,edge.toNode, edge.offset);
 
-        for (let t = 0; t <= 1; t += 0.01) {
-            let xt = (1 - t) ** 2 * start.x + 2 * (1 - t) * t * q.x + t ** 2 * end.x;
-            let yt = (1 - t) ** 2 * start.y + 2 * (1 - t) * t * q.y + t ** 2 * end.y;
+    const start = edge.fromNode;
+    const end = edge.toNode;
 
-            let dist = Math.sqrt((point.x - xt) ** 2 + (point.y - yt) ** 2);
-            if (dist < minDist) {
-                minDist = dist;
-            }
+    let minDist = Infinity;
+
+    for (let t = 0; t <= 1; t += 0.01) {
+        let xt = (1 - t) ** 2 * start.x + 2 * (1 - t) * t * q.x + t ** 2 * end.x;
+        let yt = (1 - t) ** 2 * start.y + 2 * (1 - t) * t * q.y + t ** 2 * end.y;
+        let dist = Math.sqrt((cursor.x - xt) ** 2 + (cursor.y - yt) ** 2);
+        if (dist < minDist) {
+            minDist = dist;
         }
-
-        return minDist;
     }
 
-    return pointToCurveDistance(cursor,{x: Ax, y: Ay},{x: Bx,y: By}, q) < threshold;
-
+    return minDist < threshold;
 }
 
 export function downloadGraphJson(){
@@ -76,7 +108,8 @@ export function loadGraphByJson(e){
     const reader = new FileReader();
     reader.onload = function (e) {
         const json = e.target.result;
-        graph.loadFromJson(json);
+        const graphFromJson = graph.loadFromJson(json);
+        if(!graphFromJson) loadGraphInput.value = '';
     };
     reader.readAsText(file);
 }

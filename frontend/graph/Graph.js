@@ -179,6 +179,19 @@ export class Graph{
     }
 
     loadFromJson(json){
+        let parsedData;
+        try{
+            parsedData = JSON.parse(json);
+        } catch(e){
+            alert('Cannot load graph: Invalid format.');
+            return false;
+        }
+
+        if(!parsedData || !parsedData.nodes || !parsedData.edges){
+            alert('Cannot load graph: Missing required data(nodes or edges).');
+            return false;
+        }
+
         const {nodes,edges} = JSON.parse(json);
 
         this.clearGraph();
@@ -198,6 +211,9 @@ export class Graph{
         edges.map(edge => this.addEdge(this.nodes[Number(edge.fromNode.number)-1],this.nodes[Number(edge.toNode.number) - 1]));
 
         this.redrawGraph();
+
+        return !(!this.nodes || !this.edges);
+
     }
 
     clearGraph(){

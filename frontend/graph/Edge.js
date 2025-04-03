@@ -61,7 +61,7 @@ export class Edge {
     drawLoop(color){
         const loopRadius = this.offset === 0 ? nodeRadius * 1.5 : nodeRadius + Math.abs(this.offset/2);
         const direction = this.offset >= 0 ? 1 : -1;
-        const [x,y] = [this.fromNode.x + loopRadius * direction, this.toNode.y];
+        const [x,y] = [this.fromNode.x + loopRadius * direction, this.fromNode.y];
 
         const theta = Math.asin(nodeRadius/loopRadius);
 
@@ -90,6 +90,7 @@ export class Edge {
     }
 
     drawArrow(){
+        if(this.fromNode === this.toNode) return;
         const start = {
             x: this.fromNode.x,
             y: this.fromNode.y
@@ -133,6 +134,7 @@ export class Edge {
     }
 
     calculateControlPoint(start,end,offset){
+        if(start.x === end.x && start.y === end.y) return;
         const mid = {x: (start.x + end.x) / 2,y: (start.y + end.y) / 2};
 
         const vector = {x: end.x - start.x, y: end.y - start.y};
